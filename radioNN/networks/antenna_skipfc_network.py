@@ -64,13 +64,13 @@ class AntennaNetworkSkipFC(nn.Module):
         self.fc_layers_decode = nn.Sequential(
             nn.Linear(256 * 2, 512),
             nn.LeakyReLU(),
-            SkipBlock(512, 2),
-            nn.Linear(512, 1024),
+            SkipBlock(512, 4),
+            nn.Linear(512, 256),
             nn.LeakyReLU(),
-            SkipBlock(1024, 2),
-            nn.Linear(1024, 1024),
+            SkipBlock(256, 4),
+            nn.Linear(256, 128),
             nn.LeakyReLU(),
-            nn.Linear(1024, 256 * output_channels),
+            nn.Linear(128, 13 * 4),  # 256 * output_channels),
         )
 
     def forward(self, event_data, meta_data, antenna_pos):
@@ -86,5 +86,5 @@ class AntennaNetworkSkipFC(nn.Module):
         # Separate the output
         antenna_output_meta = self.fc_meta(combined_output)
         antenna_output = self.fc_layers_decode(combined_output)
-        antenna_output = antenna_output.reshape(-1, 256, 2)
+        antenna_output = antenna_output.reshape(-1, 13, 4)
         return antenna_output_meta, antenna_output
