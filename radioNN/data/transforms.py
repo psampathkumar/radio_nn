@@ -3,12 +3,11 @@ Tranforms to be used by the dataloader class
 """
 import numpy as np
 import torch
-import numpy
 
 
 def get_module(array):
-    if isinstance(array, numpy.ndarray):
-        module = numpy
+    if isinstance(array, np.ndarray):
+        module = np
     elif isinstance(array, torch.Tensor):
         module = torch
     return module
@@ -29,8 +28,8 @@ def cart2sph(antenna_pos):
 def pulse2spec(pulse, mask):
     mm = get_module(pulse)
     fft = mm.fft.rfft(pulse.T, axis=1)[:, mask]
-    spec = mm.abs(fft)
-    phase = mm.angle(fft)
+    spec = mm.abs(fft) / 6e-3
+    phase = mm.angle(fft) / np.pi
     return mm.cat([spec, phase], axis=0).T
 
 
@@ -86,7 +85,7 @@ class DefaultTransform:
         # TODO: Fix it in the input file and stop swapaxes.
         # antenna_pos = cart2sph(antenna_pos)
         return (
-            event_data.mT / 30,
+            event_data.T / 30,
             meta_data,
             antenna_pos / 250,
             output_meta,
