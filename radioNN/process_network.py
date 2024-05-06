@@ -166,7 +166,7 @@ class NetworkProcess:
             },
             step=epoch,
         )
-        if epoch % 50 == 0 and real is not None:
+        if False:  # epoch % 50 == 0 and real is not None:
             antennas = [7, 47, 79]
             for ant in antennas:
                 figures = plot_pulses_interactive(real, sim, antenna=ant)

@@ -39,13 +39,13 @@ class AntennaNetworkFC(nn.Module):
         )
 
         self.fc_layers_decode = nn.Sequential(
-            nn.Linear(256 * 2, 1024),
+            nn.Linear(256 * 2, 256),
             nn.LeakyReLU(),
-            nn.Linear(1024, 1024),
+            nn.Linear(256, 64),
             nn.LeakyReLU(),
-            nn.Linear(1024, 1024),
+            nn.Linear(64, 16),
             nn.LeakyReLU(),
-            nn.Linear(1024, 256 * output_channels),
+            nn.Linear(16, 1 * output_channels),
         )
 
     def forward(self, event_data, meta_data, antenna_pos):
@@ -75,5 +75,5 @@ class AntennaNetworkFC(nn.Module):
         # Separate the output
         antenna_output_meta = self.fc_meta(combined_output)
         antenna_output = self.fc_layers_decode(combined_output)
-        antenna_output = antenna_output.reshape(-1, 256, 2)
+        antenna_output = antenna_output.reshape(-1, 2)
         return antenna_output_meta, antenna_output
