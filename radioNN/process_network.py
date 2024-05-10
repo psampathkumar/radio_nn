@@ -12,7 +12,7 @@ import wandb
 
 from radioNN.data.loader import AntennaDataset, custom_collate_fn
 from radioNN.networks.antenna_fc_network import AntennaNetworkFC
-from RadioPlotter.radio_plotter import plot_pulses_interactive
+from RadioPlotter.radio_plotter import plot_pulses_interactive, plot_scatter_interactive
 
 
 def fit_plane_and_return_3d_grid(pos):
@@ -168,17 +168,14 @@ class NetworkProcess:
             },
             step=epoch,
         )
-        if False:  # epoch % 50 == 0 and real is not None:
-            antennas = [7, 47, 79]
-            for ant in antennas:
-                figures = plot_pulses_interactive(real, sim, antenna=ant)
-                wandb.log(
-                    {
-                        f"Pol 1 {ant}": figures[0],
-                        f"Pol 2 {ant}": figures[1],
-                    },
-                    step=epoch,
-                )
+        figures = plot_scatter_interactive(real, sim)
+        wandb.log(
+            {
+                f"Pol 1 ": figures[0],
+                f"Pol 2 ": figures[1],
+            },
+            step=epoch,
+        )
 
     def full_training(self):
         num_epochs = wandb.config.n_epochs
