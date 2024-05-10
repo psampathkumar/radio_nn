@@ -12,7 +12,7 @@ class AntennaNetworkFC(nn.Module):
         input_sequence_size = 7 * 300
 
         self.fc_layers_encode = nn.Sequential(
-            nn.Linear(7, 64),
+            nn.Linear(9, 64),
             nn.LeakyReLU(),
             nn.Linear(64, 128),
             nn.LeakyReLU(),
@@ -68,7 +68,11 @@ class AntennaNetworkFC(nn.Module):
         event_data = event_data.reshape(event_data.size(0), -1)
         # combined_input = torch.cat((event_data, meta_data, antenna_pos), dim=1)
         combined_input = torch.cat(
-            (meta_data[:, meta_indices].reshape((-1, 4)), antenna_pos), dim=1
+            (
+                meta_data[:, meta_indices].reshape((-1, len(meta_indices))),
+                antenna_pos[:, 0].reshape((-1, 1)),
+            ),
+            dim=1,
         )
         combined_output = self.fc_layers_encode(combined_input)
 
