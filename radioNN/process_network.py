@@ -88,12 +88,14 @@ class NetworkProcess:
         self.antenna_pos_file = os.path.join(radio_data_path, "antenna_pos_data.npy")
         self.output_meta_file = os.path.join(radio_data_path, "output_meta_data.npy")
         self.output_file = os.path.join(radio_data_path, "output_gece_data.npy")
+        self.fluence_file = os.path.join(radio_data_path, "fluence_gece.npy")
         self.dataset = AntennaDataset(
             self.input_data_file,
             self.input_meta_file,
             self.antenna_pos_file,
             self.output_meta_file,
             self.output_file,
+            self.fluence_file,
             mmap_mode=memmap_mode,
             percentage=percentage,
             one_shower=one_shower,
@@ -264,8 +266,10 @@ class NetworkProcess:
             self.antenna_pos_file,
             self.output_meta_file,
             self.output_file,
+            self.fluence_file,
             mmap_mode="r",
             one_shower=one_shower,
+            return_fluence=True,
         )
         dataloader = DataLoader(
             one_sh_dataset,

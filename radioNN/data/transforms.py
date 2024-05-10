@@ -73,7 +73,6 @@ class DefaultTransform:
         # TODO: Fix it in the input file and stop swapaxes.
         antenna_pos = cart2sph(antenna_pos)
         # Just do max value as E proxy
-        output = module.sum(output.T**2, axis=1).T
 
         return (
             event_data.T / 30,

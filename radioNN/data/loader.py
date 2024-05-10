@@ -58,12 +58,14 @@ class AntennaDataset(Dataset):
         antenna_pos_file,
         output_meta_file,
         output_file,
+        fluence_file,
         mmap_mode=None,
         percentage=100,
         one_shower=None,
         transform=DefaultTransform,
         filter=DefaultFilter,
         device="cpu",
+        return_fluence=True,
     ):
         """
         Initialize the antenna dataset as memmap arrays.
@@ -81,10 +83,12 @@ class AntennaDataset(Dataset):
         """
         # TODO: Make this into a seperate class
         self.input_data = np.load(input_data_file, mmap_mode=mmap_mode)
-        self.input_meta = np.load(input_meta_file, mmap_mode=mmap_mode)
-        self.antenna_pos = np.load(antenna_pos_file, mmap_mode=mmap_mode)
-        self.output_meta = np.load(output_meta_file, mmap_mode=mmap_mode)
-        self.output = np.load(output_file, mmap_mode=mmap_mode)
+        self.input_meta = np.load(input_meta_file, mmap_mode=None)
+        self.antenna_pos = np.load(antenna_pos_file, mmap_mode=None)
+        self.output_meta = np.load(output_meta_file, mmap_mode=None)
+        self.output = np.load(
+            output_file, mmap_mode="r" if return_fluence else mmap_mode
+        )
         self.percentage = percentage
         self.one_shower = one_shower
         self.device = device
@@ -108,6 +112,8 @@ class AntennaDataset(Dataset):
         else:
             self.total_events = self.input_data.shape[0] * self.antenna_pos.shape[1]
             self.indices = self.filter.get_indices()
+        if return_fluence:
+            self.output = np.load(fluence_file, mmap_mode=None)
 
     def __len__(self):
         if self.one_shower is not None:
