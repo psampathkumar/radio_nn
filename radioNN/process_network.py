@@ -87,7 +87,8 @@ class NetworkProcess:
         self.input_meta_file = os.path.join(radio_data_path, "meta_data.npy")
         self.antenna_pos_file = os.path.join(radio_data_path, "antenna_pos_data.npy")
         self.output_meta_file = os.path.join(radio_data_path, "output_meta_data.npy")
-        self.output_file = os.path.join(radio_data_path, "output_gece_data.npy")
+        # self.output_file = os.path.join(radio_data_path, "output_gece_data.npy")
+        self.output_file = os.path.join(radio_data_path, "output_vBvvB_data.npy")
         self.fluence_file = os.path.join(radio_data_path, "fluence_gece.npy")
         self.dataset = AntennaDataset(
             self.input_data_file,
@@ -109,7 +110,7 @@ class NetworkProcess:
         self.base_path = base_path
         self.log_dir = f"{self.base_path}/{self.run_name}"
         self.model = model_class(self.output_channels).to(self.device)
-        self.criterion = nn.L1Loss()
+        self.criterion = nn.MSELoss(reduction="mean")
         if self.wandb:
             wandb.init(
                 project="RadioNN",
@@ -225,7 +226,7 @@ class NetworkProcess:
             )
 
             loss_meta = self.criterion(pred_output_meta, output_meta)
-            loss_output = self.criterion(250 * pred_output, 250 * output)
+            loss_output = self.criterion(pred_output, output)
             loss = loss_output  # + loss_meta
 
             if loss_obj:
