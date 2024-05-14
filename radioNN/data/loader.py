@@ -58,7 +58,7 @@ class AntennaDataset(Dataset):
         antenna_pos_file,
         output_meta_file,
         output_file,
-        fluence_file,
+        fluence_file=None,
         mmap_mode=None,
         percentage=100,
         one_shower=None,
